@@ -16,8 +16,8 @@ dependencies = [
   "googleapis-common-protos",
   "rich",
 ]
-description = "Schema definitions and compilation script for runconf-schema"
-name = "runconf-schema"
+description = "Schema definitions and compilation script for runconfschema"
+name = "runconfschema"
 readme = "docs/README.md"
 requires-python = ">=3.10"
 version = "1.2.1"
@@ -26,24 +26,24 @@ version = "1.2.1"
 dev = ["ruff", "pre-commit", "pytest", "pytest-cov", "mypy-protobuf", "types-protobuf"]
 
 [project.urls]
-Documentation = "https://dune-daq-sw.readthedocs.io/en/latest/packages/daq-release/team_repos/?h=runconf-schema"
-Repository = "https://github.com/DUNE-DAQ/runconf-schema"
+Documentation = "https://dune-daq-sw.readthedocs.io/en/latest/packages/daq-release/team_repos/?h=runconfschema"
+Repository = "https://github.com/DUNE-DAQ/runconfschema"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
-addopts = "-v --tb=short --cov=runconf-schema --cov=src/runconf-schema tests/"
+addopts = "-v --tb=short --cov=runconfschema --cov=src/runconfschema tests/"
 
 [tool.coverage.run]
 omit = ["tests/*", "scripts/*"]
-source = ["runconf-schema"]
+source = ["runconfschema"]
 
 [tool.ruff]
 exclude = [
-  "src/runconf-schema.egg-info",
-  "src/runconf-schema/*_pb2.py*",
-  "src/runconf-schema/*_pb2_grpc.py*",
+  "src/runconfschema.egg-info",
+  "src/runconfschema/*_pb2.py*",
+  "src/runconfschema/*_pb2_grpc.py*",
 ]
 
 [tool.ruff.lint]

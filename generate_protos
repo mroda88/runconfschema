@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for FILE in schema/runconf-schema/*.proto;
+for FILE in schema/runconfschema/*.proto;
 do
     echo "Generating protocols for ${FILE}"
 
@@ -14,13 +14,13 @@ do
 
     # FILE_NAME=$(basename -- "$FILE")
     # CLASS_NAME="${FILE_NAME%.*}"
-    # PY_OUT_FILE_NAME="python/runconf-schema/${CLASS_NAME}_pb2_grpc.py"
-    # sed -i '' "/google/! s/import \(.*_pb2\)/import runconf-schema.\1/" ${PY_OUT_FILE_NAME}
-    # PY_OUT_FILE_NAME="python/runconf-schema/${CLASS_NAME}_pb2.py"
-    # sed -i '' "/google/! s/import \(.*_pb2\)/import runconf-schema.\1/" ${PY_OUT_FILE_NAME}
+    # PY_OUT_FILE_NAME="python/runconfschema/${CLASS_NAME}_pb2_grpc.py"
+    # sed -i '' "/google/! s/import \(.*_pb2\)/import runconfschema.\1/" ${PY_OUT_FILE_NAME}
+    # PY_OUT_FILE_NAME="python/runconfschema/${CLASS_NAME}_pb2.py"
+    # sed -i '' "/google/! s/import \(.*_pb2\)/import runconfschema.\1/" ${PY_OUT_FILE_NAME}
 done
 
-for FILE in schema/runconf-schema/opmon/*.proto;
+for FILE in schema/runconfschema/opmon/*.proto;
 do
     echo "Generating protocols for ${FILE}"
 
@@ -33,8 +33,8 @@ do
 
     # FILE_NAME=$(basename -- "$FILE")
     # CLASS_NAME="${FILE_NAME%.*}"
-    # PY_OUT_FILE_NAME="python/runconf-schema/${CLASS_NAME}_pb2_grpc.py"
-    # sed -i '' "/google/! s/import \(.*_pb2\)/import runconf-schema.\1/" ${PY_OUT_FILE_NAME}
-    # PY_OUT_FILE_NAME="python/runconf-schema/${CLASS_NAME}_pb2.py"
-    # sed -i '' "/google/! s/import \(.*_pb2\)/import runconf-schema.\1/" ${PY_OUT_FILE_NAME}
+    # PY_OUT_FILE_NAME="python/runconfschema/${CLASS_NAME}_pb2_grpc.py"
+    # sed -i '' "/google/! s/import \(.*_pb2\)/import runconfschema.\1/" ${PY_OUT_FILE_NAME}
+    # PY_OUT_FILE_NAME="python/runconfschema/${CLASS_NAME}_pb2.py"
+    # sed -i '' "/google/! s/import \(.*_pb2\)/import runconfschema.\1/" ${PY_OUT_FILE_NAME}
 done

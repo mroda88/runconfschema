@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dunedaq.runconfschema;
 
-import "runconf-schema/common.proto";
+import "runconfschema/common.proto";
 
 message DropDownContent {
   repeated string values = 1;   // the list of values to be put in the dropdown menu;
