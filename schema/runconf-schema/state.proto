@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package dunedaq.runconfschema;
+
+// Messages from the runconf-ui backend
+
+/// Node status enum
+enum NodeStatus {
+    INCLUDED = 0;
+    EXCLUDED = 1;
+    PARENT_EXCLUDED = 2;
+}
+
+// Info about the node
+message NodeStatusInfo {
+    NodeStatus node_state = 1;
+    bool is_interactive = 2;
+    bool is_included = 3;
+    string path = 4;
+    oneof node_value {
+        float float_value = 5;
+        bool  bool_value = 6;
+    }
+    string label = 7;
+    string tooltip = 8;
+}
+
+message LabelledNode {
+    string label = 1;
+    NodeStatusInfo node_info = 2;
+}
+
+message NodeGroup {
+    string label = 1;
+    repeated LabelledNode nodes = 2;
+}
+
+// Messages TO the runconf-ui backend
+message SetNodeValue{
+    string path = 1;
+    oneof node_value {
+        float float_value = 2;
+        bool bool_value = 3;
+        NodeStatus node_status_value = 4;
+    }
+}
