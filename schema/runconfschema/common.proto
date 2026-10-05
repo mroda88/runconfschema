@@ -17,3 +17,7 @@ message Response {
     optional string message = 2;   // any additional message to be displayed to the user
     optional Error error = 3;
 }
+
+message Endpoint {   // should we split into address and port? 
+    string url = 1;   // the URL of the endpoint;
+}

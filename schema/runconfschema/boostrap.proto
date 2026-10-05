@@ -13,5 +13,7 @@ message BootRequest {
   optional string base_url = 6;   // how can we generalise the URLs? 
   optional string ops_url = 7;
   // do we need a log level?  
+
+  Endpoint frontend_endpoint = 8;   // the endpoint of the frontend, so that the backend can send messages to it;
 }
 

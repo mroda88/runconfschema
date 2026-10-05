@@ -18,6 +18,7 @@ message Initialisation {
    // the size of dropdown menu is not the size of the structue;
 
    optional string additional_info = 6;   // any additional message to be displayed at the top of the page
+   Endpoint backend_endpoint = 7;   // the endpoint of the backend, so that the backend can send messages to it;
 }
 
 message DropDownSelection {
@@ -36,7 +37,7 @@ message Open {
     map<string,string> selection =1; // it might be a bit redundant;
 }
     
-message Outcome {
+message ConfigurationOutcome {
     Response response = 1;
     string oks_file = 2;   
     string current_file = 3;  
