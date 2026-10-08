@@ -4,9 +4,19 @@ package dunedaq.runconfschema;
 
 import "runconfschema/common.proto";
 
+
+// ------------
+// Buidling blocks
+// -------------
+
 message DropDownContent {
   repeated string values = 1;   // the list of values to be put in the dropdown menu;
 }
+
+
+// ------------
+// From backend to frontend
+// -------------
 
 // Do we need an initial initialisation request?
 message Initialisation {
@@ -19,13 +29,11 @@ message Initialisation {
 
    optional string additional_info = 6;   // any additional message to be displayed at the top of the page
    Endpoint backend_endpoint = 7;   // the endpoint of the backend, so that the backend can send messages to it;
+
+   // should we add a version of the messages?
 }
 
-message DropDownSelection {
-  string key = 1;   // the identifier of the dropdown menu;
-  string value = 2;  // the selected value from the dropdown menu;
-}
-
+// Response to DropDowbSelection
 message DropDownUpdate {
     Response response = 1;
     map<string, DropDownContent> update = 2;
@@ -33,13 +41,30 @@ message DropDownUpdate {
 
 }
 
-message Open {
-    map<string,string> selection =1; // it might be a bit redundant;
-}
-    
+// Response to Open
 message ConfigurationOutcome {
     Response response = 1;
     string oks_file = 2;   
     string current_file = 3;  
     string session_name = 4;  
 }
+
+// ------------
+// From frontend to backend
+//-------------
+
+
+// this message can be sent automatically by the frontend when dropdown update only has one value
+message DropDownSelection {
+  string key = 1;   // the identifier of the dropdown menu;
+  string value = 2;  // the selected value from the dropdown menu;
+}
+
+message Open {
+    map<string,string> selection =1; // it might be a bit redundant;
+}
+    
+
+// sequence
+//  
+// 
