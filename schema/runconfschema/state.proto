@@ -13,6 +13,11 @@ enum NodeStatus {
   PARENT_EXCLUDED = 2;
 }
 
+enum NodeGroup {
+  TOGGLES = 0;
+  ADJUSTABLE = 1;
+}
+
 // Info about the node
 message NodeStatusInfo {
   NodeStatus node_state = 1;  // Is the node enabled/disabled/has its parent disabled?
@@ -30,15 +35,11 @@ message LabelledNode {
 
 /// Helper functions for setting node values
 
-/// Separated since we caaaaan request with LabelledNode
-message RequestAdjustableNodes {
-  Response response = 1;
-  repeated LabelledNode = 2; 
-}
-
-message RequestExcludeableNodes {
-    Response response = 1;
-    repeated LabelledNode = 2; 
+// Request all nodes of a given type (adjustable or toggleable)
+message RequestNodes {
+  NodeGroup node_group = 1;
+  Response response = 2;
+  repeated LabelledNode = 3; 
 }
 
 // Messages TO the runconf-ui backend
