@@ -29,8 +29,9 @@ message NodeStatus {
 // The full tree structure as a "dictionary"
 message LabelledNode {
   string label = 1;
-  NodeStatusInfo node_info = 2;
-  repeated LabelledNode children = 3;
+  NodeGroup group =2;
+  NodeStatusInfo node_info = 3;
+  repeated LabelledNode children = 4;
 }
 
 /// Helper functions for setting node values
@@ -44,11 +45,11 @@ message RequestNodes {
 
 // Messages TO the runconf-ui backend
 message SetNodeValue {
-    repeated string path = 2;
+    repeated string path = 1;
     oneof node_value {
-        float float_value = 3;
-        bool bool_value = 4;
-        NodeStatus node_status_value = 5;
+        double double_value = 2;
+        bool bool_value = 3;
+        NodeStatus node_status_value = 4;
     }
 }
 
