@@ -1,0 +1,25 @@
+// Protobuf controls for options menu
+syntax = "proto3";
+
+package dunedaq.runconfschema;
+
+import "runconfschema/common.proto";
+
+enum AppCommand {
+    QUIT = 1; // Quit completely
+    CREATE_QUIT = 2; // For now we assume that creating a config = quitting
+    RESET = 3; // Reset to initial state
+    HELP = 4; // Display the help message
+}
+
+// Messages for quit/create/cancel buttons on menus
+message SendMainCommand{
+    AppCommand command = 1; // command to send
+}
+
+// Backend can return info string from commands (text to display etc.)
+message RequestCommandInfo{
+  Response response = 1; // Response
+  AppCommand command = 2; // Command we've sent (for book keeping)
+  string command_info = 3; // Info to display
+}
