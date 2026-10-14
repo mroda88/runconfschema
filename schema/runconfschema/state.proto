@@ -19,11 +19,11 @@ enum NodeGroup {
 }
 
 // Info about the node
-message NodeStatusInfo {
+message NodeStatus {
   NodeStatus node_state = 1;  // Is the node enabled/disabled/has its parent disabled?
-  repeated string node_path = 4; // Path to the node in the tree
-  double node_value = 5; // Value of the node (directly asks the node so will not be a NodeStatus)
-  string tooltip = 7; // Additional information to display if a GUI representing the node is hovered over
+  repeated string node_path = 2; // Path to the node in the tree
+  optional double node_value = 3; // Value of the node (directly asks the node so will not be a NodeStatus)
+  optional string tooltip = 4; // Additional information to display if a GUI representing the node is hovered over
 }
 
 // The full tree structure as a "dictionary"
