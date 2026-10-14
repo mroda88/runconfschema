@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package dunedaq.runconfschema;
+
+import "runconfschema/common.proto";
+
+// Messages from the runconf-ui backend
+
+/// Node status enum
+enum NodeStatus {
+  INCLUDED = 0;
+  EXCLUDED = 1;
+  PARENT_EXCLUDED = 2;
+}
+
+enum NodeGroup {
+  TOGGLES = 0;
+  ADJUSTABLE = 1;
+}
+
+// Info about the node
+message NodeStatus {
+  NodeStatus node_state = 1;  // Is the node enabled/disabled/has its parent disabled?
+  repeated string node_path = 2; // Path to the node in the tree
+  optional double node_value = 3; // Value of the node (directly asks the node so will not be a NodeStatus)
+  optional string tooltip = 4; // Additional information to display if a GUI representing the node is hovered over
+}
+
+// The full tree structure as a "dictionary"
+message LabelledNode {
+  string label = 1;
+  NodeGroup group =2;
+  NodeStatusInfo node_info = 3;
+  repeated LabelledNode children = 4;
+}
+
+/// Helper functions for setting node values
+// Request all nodes of a given type (adjustable or toggleable)
+message RequestNodes {
+  NodeGroup node_group = 1;
+  Response response = 2;
+  repeated LabelledNode = 3; 
+}
+
+// Messages TO the runconf-ui backend
+message SetNodeValue {
+    repeated string path = 1;
+    oneof node_value {
+        double double_value = 2;
+        bool bool_value = 3;
+        NodeStatus node_status_value = 4;
+    }
+}
+
+message ResetNodeValue{
+    repeated string path = 1;
+}
