@@ -50,6 +50,7 @@ jobs:
           set -euo pipefail
           echo "Listing current directory contents:"
           ls -1
+          pwd
           cd nightly/NFD_DEV*
           source env.sh
           cd "$GITHUB_WORKSPACE"
