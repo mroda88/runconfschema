@@ -6,7 +6,7 @@ requires = ["setuptools >= 61.0"]
 authors = [
   {name = "Pawel Plesniak", email = "pawel.plesniak15@imperial.ac.uk"},
   {name = "James Turner", email = "james.turner@imperial.ac.uk"},
-   {name = "Marco Roda", email = "marco.roda@liverpool.ac.uk"},
+  {name = "Marco Roda", email = "marco.roda@liverpool.ac.uk"},
 ]
 dependencies = [
   "click",

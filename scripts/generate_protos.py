@@ -44,7 +44,7 @@ log.addHandler(
     )
 )
 
-compiled_extensions = ["_pb2.py", "_pb2.pyi", "_pb2_grpc.py", "_pb2_grpc.pyi"]
+compiled_extensions = ["_pb2.py", "_pb2.pyi"]#, "_pb2_grpc.py", "_pb2_grpc.pyi"]
 
 
 def in_dev_mode():
@@ -77,12 +77,12 @@ def generate_protos(
                     "python -m grpc_tools.protoc",
                     "-I'./schema'",
                     f"--python_out={output_dir!s}",
-                    f"--grpc_python_out={output_dir!s}",
                     f"--mypy_out={output_dir!s}",
-                    f"--mypy_grpc_out={output_dir!s}",
                     str(proto_file),
                 ]
             )
+            # f"--grpc_python_out={output_dir!s}",
+            # f"--mypy_grpc_out={output_dir!s}",
             log.debug(cmd)
             subprocess.run(
                 cmd,
