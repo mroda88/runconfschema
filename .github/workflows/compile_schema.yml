@@ -1,14 +1,6 @@
 name: Compile the schema and include in repo
 
 on:
-  push:
-    branches:
-      - develop
-      - "prep-release/**"
-    paths:
-      - "schema/**"
-      - "src/**"
-      - ".github/workflows/compile_schema.yml"
   pull_request:
     branches:
       - develop
@@ -17,7 +9,6 @@ on:
     paths:
       - "schema/**"
       - "src/**"
-      - ".github/workflows/compile_schema.yml"
 
 permissions:
   contents: write
