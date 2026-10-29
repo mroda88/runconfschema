@@ -48,6 +48,16 @@ jobs:
       - name: Compile protobuf schemas into src
         run: |
           set -euo pipefail
+          nightly_root="$GITHUB_WORKSPACE"
+          while [[ "$nightly_root" != "/" && "$(basename "$nightly_root")" != NFD_DEV_* ]]; do
+            nightly_root="$(dirname "$nightly_root")"
+          done
+          if [[ "$(basename "$nightly_root")" != NFD_DEV_* ]]; then
+            echo "::error::Could not find the nightly workarea (NFD_DEV_*) above $GITHUB_WORKSPACE."
+            exit 1
+          fi
+          cd "$nightly_root"
+          source env.sh
           cd "$GITHUB_WORKSPACE"
           mapfile -d '' schemas < <(find schema -type f -name '*.proto' -print0 | sort -z)
           if (( ${#schemas[@]} == 0 )); then
