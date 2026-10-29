@@ -48,18 +48,9 @@ jobs:
       - name: Compile protobuf schemas into src
         run: |
           set -euo pipefail
-          nightly_root="$GITHUB_WORKSPACE"
-          while [[ "$nightly_root" != "/" ]]; do
-            if [[ -f "$nightly_root/env.sh" && -d "$nightly_root/sourcecode" ]]; then
-              break
-            fi
-            nightly_root="$(dirname "$nightly_root")"
-          done
-          if [[ ! -f "$nightly_root/env.sh" || ! -d "$nightly_root/sourcecode" ]]; then
-            echo "::error::Could not find a workarea with env.sh and sourcecode/ above $GITHUB_WORKSPACE."
-            exit 1
-          fi
-          cd "$nightly_root"
+          echo "Listing current directory contents:"
+          ls -1
+          cd nightly/NFD_DEV*
           source env.sh
           cd "$GITHUB_WORKSPACE"
           mapfile -d '' schemas < <(find schema -type f -name '*.proto' -print0 | sort -z)
