@@ -49,11 +49,14 @@ jobs:
         run: |
           set -euo pipefail
           nightly_root="$GITHUB_WORKSPACE"
-          while [[ "$nightly_root" != "/" && "$(basename "$nightly_root")" != NFD_DEV_* ]]; do
+          while [[ "$nightly_root" != "/" ]]; do
+            if [[ -f "$nightly_root/env.sh" && -d "$nightly_root/sourcecode" ]]; then
+              break
+            fi
             nightly_root="$(dirname "$nightly_root")"
           done
-          if [[ "$(basename "$nightly_root")" != NFD_DEV_* ]]; then
-            echo "::error::Could not find the nightly workarea (NFD_DEV_*) above $GITHUB_WORKSPACE."
+          if [[ ! -f "$nightly_root/env.sh" || ! -d "$nightly_root/sourcecode" ]]; then
+            echo "::error::Could not find a workarea with env.sh and sourcecode/ above $GITHUB_WORKSPACE."
             exit 1
           fi
           cd "$nightly_root"
