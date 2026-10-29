@@ -39,7 +39,7 @@ message LabelledNode {
 message RequestNodes {
   NodeGroup node_group = 1;
   Response response = 2;
-  repeated LabelledNode = 3; 
+  repeated LabelledNode nodes = 3; 
 }
 
 // Messages TO the runconf-ui backend
