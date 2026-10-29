@@ -54,7 +54,7 @@ jobs:
             echo "::error::No protobuf schemas found under schema/. Configure this step for the repository's schema compiler."
             exit 1
           fi
-          bash scripts/generate_protos.sh
+          bash scripts/generate_protos.py
 
       - name: Check generated sources
         id: generated
