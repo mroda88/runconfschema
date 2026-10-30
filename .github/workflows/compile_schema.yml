@@ -51,6 +51,8 @@ jobs:
           echo "Listing current directory contents:"
           ls -1
           pwd
+          ls /cvmfs || true
+          ls /cvmfs/dunedaq-development.opensciencegrid.org/nightly/ || true
           cd /cvmfs/dunedaq-development.opensciencegrid.org/nightly/NFD_DEV*
           source env.sh
           cd "$GITHUB_WORKSPACE"
