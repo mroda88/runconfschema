@@ -1,4 +1,4 @@
-name: Compilation check
+name: Sanity check
 
 on:
   pull_request:
@@ -26,7 +26,7 @@ env:
 
 jobs:
   compile-schema:
-    name: Validate and update compiled schema
+    name: Check src/ contains compiled schema
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     defaults:
