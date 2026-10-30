@@ -48,19 +48,26 @@ jobs:
       - name: Compile protobuf schemas into src
         run: |
           set -euo pipefail
-          echo "Listing current directory contents:"
-          ls -1
-          pwd
-          ls /cvmfs || true
-          ls /cvmfs/dunedaq-development.opensciencegrid.org/nightly/ || true
-          cd /cvmfs/dunedaq-development.opensciencegrid.org/nightly/NFD_DEV*
-          source env.sh
+          
+          # 1. Initialize the built-in DAQ environment tools
+          source /cvmfs/dunedaq.opensciencegrid.org/setup_dunedaq.sh
+          setup_dbt latest_v5
+          
+          # 2. Resolve today's Far Detector tag and load its library/python paths
+          TARGET_TAG=$(basename $(readlink -f /cvmfs/dunedaq-development.opensciencegrid.org/nightly/last_fddaq))
+          dbt-setup-release -n $TARGET_TAG
+          
+          # 3. Guarantee we are at the repository root before running local scripts
           cd "$GITHUB_WORKSPACE"
+          
+          # 4. Find and compile the schemas
           mapfile -d '' schemas < <(find schema -type f -name '*.proto' -print0 | sort -z)
           if (( ${#schemas[@]} == 0 )); then
             echo "::error::No protobuf schemas found under schema/. Configure this step for the repository's schema compiler."
             exit 1
           fi
+          
+          echo "Compiling schemas using the DAQ Python environment..."
           python scripts/generate_protos.py
 
       - name: Check generated sources
