@@ -51,7 +51,7 @@ jobs:
           echo "Listing current directory contents:"
           ls -1
           pwd
-          cd nightly/NFD_DEV*
+          cd /cvmfs/dunedaq-development.opensciencegrid.org/nightly/NFD_DEV*
           source env.sh
           cd "$GITHUB_WORKSPACE"
           mapfile -d '' schemas < <(find schema -type f -name '*.proto' -print0 | sort -z)
