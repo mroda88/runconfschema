@@ -50,6 +50,8 @@ jobs:
           set -euo pipefail
           
           # 1. Initialize the built-in DAQ environment tools
+          # DBT scripts reference unset variables (e.g. LOCAL_SPACK_DIR), so disable nounset while sourcing them
+          set +u
           echo "Initializing DAQ environment..."
           source /cvmfs/dunedaq.opensciencegrid.org/setup_dunedaq.sh
           echo "DAQ environment initialized."
@@ -62,6 +64,7 @@ jobs:
           echo "Setting up DBT release for tag $TARGET_TAG..."
           dbt-setup-release -n $TARGET_TAG
           echo "DBT release setup complete."
+          set -u
           
           # 3. Guarantee we are at the repository root before running local scripts
           cd "$GITHUB_WORKSPACE"
