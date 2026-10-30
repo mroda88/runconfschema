@@ -11,7 +11,7 @@ on:
       - "src/**"
 
 permissions:
-  contents: write
+  contents: read
 
 # Cancel concurrent runs - i.e. if rapid successive pushes are made, cancel the old ones (even if in progress)
 concurrency:
@@ -45,64 +45,34 @@ jobs:
       - name: Configure Git for the container
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Compile protobuf schemas into src
+      - name: Compile protobuf schemas
         run: |
-          # Exit immediately if a command exits with a non-zero status
           set -eo pipefail
-          
-          # 1. Initialize the built-in DAQ environment tools
-          echo "Initializing DAQ environment..."
           source /cvmfs/dunedaq.opensciencegrid.org/setup_dunedaq.sh
-          echo "DAQ environment initialized."
-          echo "Setting up DBT..."
           setup_dbt latest
-          echo "DBT setup complete."
-          
-          # 2. Resolve today's Far Detector tag and load its library/python paths
+
           TARGET_TAG=$(basename $(readlink -f /cvmfs/dunedaq-development.opensciencegrid.org/nightly/last_fddaq))
-          echo "Setting up DBT release for tag $TARGET_TAG..."
           dbt-setup-release -n $TARGET_TAG
-          echo "DBT release setup complete."
-          
-          # 3. Guarantee we are at the repository root before running local scripts
           cd "$GITHUB_WORKSPACE"
-          echo "Changed directory to repository root: $GITHUB_WORKSPACE"
           
-          # 4. Find and compile the schemas
           mapfile -d '' schemas < <(find schema -type f -name '*.proto' -print0 | sort -z)
           if (( ${#schemas[@]} == 0 )); then
             echo "::error::No protobuf schemas found under schema/. Configure this step for the repository's schema compiler."
             exit 1
           fi
           
-          echo "Compiling schemas using the DAQ Python environment..."
+          echo "Compiling schemas"
           bash generate_protos
 
-      - name: Check generated sources
-        id: generated
+      - name: Check generated sources match src/
         run: |
           set -euo pipefail
+          # Stage so newly generated (untracked) files are included in the diff
           git add -- src/
           if git diff --cached --quiet -- src/; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Compiled schema sources are up to date."
           else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
             git diff --cached --stat -- src/
+            echo "::error::Validation of schema compilation differed to the contents of src/, did you forget to run \`python scripts/generate_protos.py\`?"
+            exit 1
           fi
-
-      - name: Report outdated sources in fork PRs
-        if: steps.generated.outputs.changed == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
-        run: |
-          echo "::error::Compiled sources are outdated. This workflow cannot push to a fork; regenerate src/ from schema/ and commit the changes to the PR branch."
-          exit 1
-
-      - name: Commit generated sources to the source branch
-        if: steps.generated.outputs.changed == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m "chore: regenerate compiled schema sources"
-          # A normal push rejects concurrent branch updates rather than overwriting them.
-          git push origin "HEAD:refs/heads/${HEAD_REF}"
