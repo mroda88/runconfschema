@@ -1,0 +1,78 @@
+name: Sanity check
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - "prep-release/**"
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "schema/**"
+      - "src/**"
+
+permissions:
+  contents: read
+
+# Cancel concurrent runs - i.e. if rapid successive pushes are made, cancel the old ones (even if in progress)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+# Define globals used across multiple jobs
+env:
+  REPO_OWNER: ${{ github.event.pull_request.head.repo.owner.login || github.repository_owner }}
+  HEAD_REF: ${{ github.head_ref || github.ref_name }}
+
+
+jobs:
+  compile-schema:
+    name: Check src has compiled schema
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/dune-daq/nightly-release-alma9:development_v5
+
+    steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Configure Git for the container
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Compile protobuf schemas
+        run: |
+          set -eo pipefail
+          source /cvmfs/dunedaq.opensciencegrid.org/setup_dunedaq.sh
+          setup_dbt latest
+
+          TARGET_TAG=$(basename $(readlink -f /cvmfs/dunedaq-development.opensciencegrid.org/nightly/last_fddaq))
+          dbt-setup-release -n $TARGET_TAG
+          cd "$GITHUB_WORKSPACE"
+          
+          mapfile -d '' schemas < <(find schema -type f -name '*.proto' -print0 | sort -z)
+          if (( ${#schemas[@]} == 0 )); then
+            echo "::error::No protobuf schemas found under schema/. Configure this step for the repository's schema compiler."
+            exit 1
+          fi
+          
+          echo "Compiling schemas"
+          bash generate_protos
+
+      - name: Check generated sources match src/
+        run: |
+          set -euo pipefail
+          # Stage so newly generated (untracked) files are included in the diff
+          git add -- src/
+          if git diff --cached --quiet -- src/; then
+            echo "Compiled schema sources are up to date."
+          else
+            git diff --cached --stat -- src/
+            echo "::error::Validation of schema compilation differed to the contents of src/, did you forget to run \`python scripts/generate_protos.py\`?"
+            exit 1
+          fi
