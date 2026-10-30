@@ -50,15 +50,22 @@ jobs:
           set -euo pipefail
           
           # 1. Initialize the built-in DAQ environment tools
+          echo "Initializing DAQ environment..."
           source /cvmfs/dunedaq.opensciencegrid.org/setup_dunedaq.sh
-          setup_dbt latest_v5
+          echo "DAQ environment initialized."
+          echo "Setting up DBT..."
+          setup_dbt latest
+          echo "DBT setup complete."
           
           # 2. Resolve today's Far Detector tag and load its library/python paths
           TARGET_TAG=$(basename $(readlink -f /cvmfs/dunedaq-development.opensciencegrid.org/nightly/last_fddaq))
+          echo "Setting up DBT release for tag $TARGET_TAG..."
           dbt-setup-release -n $TARGET_TAG
+          echo "DBT release setup complete."
           
           # 3. Guarantee we are at the repository root before running local scripts
           cd "$GITHUB_WORKSPACE"
+          echo "Changed directory to repository root: $GITHUB_WORKSPACE"
           
           # 4. Find and compile the schemas
           mapfile -d '' schemas < <(find schema -type f -name '*.proto' -print0 | sort -z)
