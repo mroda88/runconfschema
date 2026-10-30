@@ -1,4 +1,4 @@
-name: Compile the schema and include in repo
+name: Compilation check
 
 on:
   pull_request:
